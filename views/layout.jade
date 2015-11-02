@@ -1,7 +1,19 @@
 doctype html
-html
+html(lang='en')
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(http-equiv='Content-type', content='text/html; charset=utf-8')
+    title Stripe Getting Started Form
+    // The required Stripe lib
+    script(type='text/javascript', src='https://js.stripe.com/v2/')
+    // jQuery is used only for this example; it isn't required to use Stripe
+    script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js')
+        
+    script(type='text/javascript').
+      // This identifies your website in the createToken call below
+      Stripe.setPublishableKey('pk_test_gOZjBAKt8RPmb99jJsunJrDj');
+    //- script(type="text/javascript" src="/public/javascripts/charge.js")
+    //- script(type="text/javascript")
+    
+
   body
     block content
