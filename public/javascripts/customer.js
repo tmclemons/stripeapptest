@@ -1,9 +1,9 @@
 
-var stripeChargeResponseHandler = function(status, response) {
-var $form = $('#payment-form');
+var stripeCustomerResponseHandler = function(status, response) {
+var $form = $('#customer-form');
   if (response.error) {
     // Show the errors on the form
-    $form.find('.payment-errors').text(response.error.message);
+    $form.find('.customer-errors').text(response.error.message);
     $form.find('button').prop('disabled', false);
   } else {
     // token contains id, last4, and card type
@@ -16,11 +16,11 @@ var $form = $('#payment-form');
 };
 
 jQuery(function($) {
-  $('#payment-form').submit(function(e) {
+  $('#customer-form').submit(function(e) {
     var $form = $(this);
     // Disable the submit button to prevent repeated clicks
     $form.find('button').prop('disabled', true);
-    Stripe.card.createToken($form, stripeChargeResponseHandler);
+    Stripe.card.createToken($form, stripeCustomerResponseHandler);
     // Prevent the form from submitting with the default action
     return false;
   });
