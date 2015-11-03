@@ -1,0 +1,4 @@
+span Subscriptions
+  for id in data
+    ul
+      li #{id.plan.name} #{id.quantity} #{new Date(id.start*1000)}
