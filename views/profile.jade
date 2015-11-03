@@ -2,8 +2,36 @@ extends layout
 
 block content
   div
-    include ./partials/customer.jade
-    include ./partials/subscriptions.jade
-  //- script
-  //-   var results = !{JSON.stringify(results)};
-  //-   var customerId = results.id;
+    h1 Customer Profile
+    //- for result in results
+    .form-row
+    span Customer ID
+      p #{customer.id}
+    .form-row
+      label
+        span Customer Name
+    .form-row
+      input(type="text" value="#{customer.description}")
+      button(type="submit") Submit
+    .form-row
+      label
+        span Customer Email
+    .form-row
+      input(type="text" value="#{customer.email}")
+      button(type="submit") Submit
+    .form-row
+      label
+        span Customer Credit Card
+    .form-row
+      label
+        span Credit Card Number
+      for source in sources
+        input(type="text" placeholder="**** **** **** #{source.last4}")
+      button(type="submit") Submit
+    .form-row
+    span Account Balance
+      p #{customer.account_balance} #{customer.currency}
+    span Subscriptions
+      for subscribe in subscribes
+        ul
+          li #{subscribe.plan.name} #{subscribe.quantity} #{new Date(subscribe.start*1000)}

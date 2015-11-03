@@ -72,6 +72,11 @@ router.post('/plans', function(req, res, next) {
 // retrieve customer data
 router.get('/profile/customer', function(req, res, next) {
   var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
+  var count = 0;
+  var cusResponse;
+  var subResponse;
+  var ccResponse;
+
   stripe.customers.retrieve(
     "cus_7HLWwJz9DIJrqF",
     function(err, result) {
@@ -80,28 +85,43 @@ router.get('/profile/customer', function(req, res, next) {
       } else {
         // console.log(result);
         // console.log(Object.keys(result.subscriptions.data));
-        res.render('profile', result);
-        return result
+        // res.render('profile', result);
+        // console.log('hit')
+        count++;
+        // console.log(count)
+        // return result
+        cusResponse = result;
+        ccResponse = result.sources.data;
       }
   });
-});
 
-router.get('/profile/subscriptions', function(req, res, next) {
-  var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
   stripe.customers.listSubscriptions(
-  "cus_7HLWwJz9DIJrqF",
-  function(err, subscriptions) {
-    if (err && err.type === 'StripeCardError') {
-      // The card has been decline
-    } else {
-      // console.log(subscriptions);
-      console.log(subscriptions.data);
-
-      // console.log(Object.keys(result.subscriptions.data));
-      res.render('profile', subscriptions);
-      return subscriptions
-    }
-  });
+    "cus_7HLWwJz9DIJrqF",
+    function(err, subscriptions) {
+      if (err && err.type === 'StripeCardError') {
+        // The card has been decline
+      } else {
+        // console.log(subscriptions);
+        // console.log(subscriptions.data);
+        // res.render('profile', subscriptions);
+        // console.log('hit2')
+        count++;
+        // console.log(count)
+        // return subscriptions
+        subResponse = subscriptions.data;
+        console.log(count)
+        if(count == 2){
+          console.log(ccResponse)
+          // console.log(subResponse)
+          res.render('profile', {
+            customer: cusResponse,
+            sources: ccResponse,
+            subscribes: subResponse
+          });
+        }
+      }
+    });
 });
+
 
 module.exports = router;
