@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
 
 /* GET home page. */
 router.get('/', function(req, res, next ) {
@@ -8,11 +9,8 @@ router.get('/', function(req, res, next ) {
     // res.sendFile('index');
 });
 
+// sample charge
 router.post('/charge', function(req, res, next) {
-  var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
-
-  // (Assuming you're using express - expressjs.com)
-  // Get the credit card details submitted by the form
   var stripeToken = req.body.stripeToken;
 
   var charge = stripe.charges.create({
@@ -29,11 +27,8 @@ router.post('/charge', function(req, res, next) {
   });
 });
 
+// create customer
 router.post('/customers', function(req, res, next) {
-  var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
-
-  // (Assuming you're using express - expressjs.com)
-  // Get the credit card details submitted by the form
   var stripeToken = req.body.stripeToken;
 
   var customers = stripe.customers.create({
@@ -48,11 +43,8 @@ router.post('/customers', function(req, res, next) {
   });
 });
 
+// add subscription
 router.post('/plans', function(req, res, next) {
-  var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
-
-  // (Assuming you're using express - expressjs.com)
-  // Get the credit card details submitted by the form
   var stripeToken = req.body.stripeToken;
   var quantity = req.body.quantity;
 
@@ -71,7 +63,6 @@ router.post('/plans', function(req, res, next) {
 
 // retrieve customer data
 router.get('/profile/customer', function(req, res, next) {
-  var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
   var count = 0;
   var cusResponse;
   var subResponse;
@@ -84,8 +75,6 @@ router.get('/profile/customer', function(req, res, next) {
         // The card has been decline
       } else {
         // console.log(result);
-        // console.log(Object.keys(result.subscriptions.data));
-        // res.render('profile', result);
         // console.log('hit')
         count++;
         // console.log(count)
@@ -103,15 +92,13 @@ router.get('/profile/customer', function(req, res, next) {
       } else {
         // console.log(subscriptions);
         // console.log(subscriptions.data);
-        // res.render('profile', subscriptions);
         // console.log('hit2')
         count++;
         // console.log(count)
-        // return subscriptions
         subResponse = subscriptions.data;
-        console.log(count)
+        // console.log(count)
         if(count == 2){
-          console.log(ccResponse)
+          // console.log(ccResponse)
           // console.log(subResponse)
           res.render('profile', {
             customer: cusResponse,
@@ -122,6 +109,46 @@ router.get('/profile/customer', function(req, res, next) {
       }
     });
 });
+
+//update customer subscription
+router.post('/profile/update-subs', function(req, res, next){
+  var customerObj = "cus_7HLWwJz9DIJrqF";
+  var subscriptionID = req.body.subID;
+  var quantity = req.body.subQuantity;
+  var count = 0;
+
+  for (var i = 0; i < req.body.subTotal; i++) {
+    updateSubs(subscriptionID[i], quantity[i]);
+  }
+
+  res.redirect('/profile/customer');
+
+  // function(err, subscription) {
+  //   if (err && err.type === 'StripeCardError') {
+  //        // The card has been decline
+  //      } else {
+  //        if(count == req.body.subTotal)
+  //        res.redirect('/profile/customer');
+  //      }
+  // }
+});
+
+// update subscription info
+function updateSubs(subscriptionID, quantity) {
+  // var subscriptID = JSON.stringify(subscriptionID);
+  // var customerObjStr = "'"+customerObj+"'";
+
+  stripe.customers.updateSubscription(
+    'cus_7HLWwJz9DIJrqF',
+    subscriptionID,
+    {
+      plan:'sift-introductory',
+      quantity: quantity
+    },
+    function(err, subscriptions) {
+
+    });
+}
 
 
 module.exports = router;

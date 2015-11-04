@@ -5,33 +5,68 @@ block content
     h1 Customer Profile
     //- for result in results
     .form-row
-    span Customer ID
-      p #{customer.id}
+      span Customer ID
+        p #{customer.id}
     .form-row
       label
         span Customer Name
+    form#customer-form(action='', method='POST')
+      .form-row
+        input(type="text" value="#{customer.description}")
+      .form-row
+        label
+          span Customer Email
+      .form-row
+        input(type="text" value="#{customer.email}")
+      .form-row
+        label
+          span Customer Credit Card
+      .form-row
+        for source in sources
+          .form-row
+            .form-row
+              label First and Last Name
+              .form-row
+                input(type="text" placeholder="**** **** **** #{source.last4}" name="")
+            .form-row
+              label Expiration Date
+              .form-row
+                input(type="text" placeholder="#{source.exp_month}" name="")
+                | /
+                input(type="text" placeholder="#{source.exp_year}" name="")
+            .form-row
+              label Street Address 1
+              .form-row
+                input(type="text" placeholder="#{source.address_line1}" name="address1")
+              label Street Address 2
+              .form-row
+                input(type="text" placeholder="#{source.address_line2}" name="address2")
+            .form-row
+              .form-row
+                label Zip Code
+                  .form-row
+                    input(type="text" placeholder="#{source.address_zip}" name="zip")
+              .form-row
+                label State
+                  .form-row
+                    input(type="text" placeholder="#{source.address_state}" name="state")
+              .form-row
+                label Country
+                  .form-row
+                    input(type="text" placeholder="#{source.address_country}" name="country")
+      button(type="submit") Update Information
+      
     .form-row
-      input(type="text" value="#{customer.description}")
-      button(type="submit") Submit
-    .form-row
-      label
-        span Customer Email
-    .form-row
-      input(type="text" value="#{customer.email}")
-      button(type="submit") Submit
-    .form-row
-      label
-        span Customer Credit Card
-    .form-row
-      label
-        span Credit Card Number
-      for source in sources
-        input(type="text" placeholder="**** **** **** #{source.last4}")
-      button(type="submit") Submit
-    .form-row
-    span Account Balance
-      p #{customer.account_balance} #{customer.currency}
-    span Subscriptions
-      for subscribe in subscribes
-        ul
-          li #{subscribe.plan.name} #{subscribe.quantity} #{new Date(subscribe.start*1000)}
+      span Account Balance
+        p #{customer.account_balance} #{customer.currency}
+      span Subscriptions
+        form#subscribe-form(action='/profile/update-subs' method='POST' name="subscribeform")
+          span Total Plans #{customer.subscriptions.total_count}
+            input(type="hidden" value="#{customer.subscriptions.total_count}" name="subTotal")
+          for subscribe in subscribes
+            ul
+              li #{subscribe.plan.name} #{new Date(subscribe.start*1000)} 
+                input(type="hidden" value="#{subscribe.id}" name="subID") 
+                input(type="text" value="#{subscribe.quantity}" name="subQuantity") 
+                button(type="") Delete Plan
+          button(type="submit") Update Information
