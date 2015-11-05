@@ -10,51 +10,59 @@ block content
     .form-row
       label
         span Customer Name
-    form#customer-form(action='', method='POST')
+    form#customer-form(action='/profile/cus-info', method='POST')
       .form-row
-        input(type="text" value="#{customer.description}")
+        input(type="text" value="#{customer.description}" name="cusName")
       .form-row
         label
           span Customer Email
       .form-row
-        input(type="text" value="#{customer.email}")
+        input(type="text" value="#{customer.email}" name="cusEmail")
       .form-row
         label
           span Customer Credit Card
       .form-row
+        input(type="hidden" value="#{customer.sources.total_count}" name="ccQuantity")
         for source in sources
           .form-row
             .form-row
               label First and Last Name
               .form-row
-                input(type="text" placeholder="**** **** **** #{source.last4}" name="")
+                span **** **** **** #{source.last4}
+                input(type="hidden" value="#{source.id}" name="ccID")
+                
             .form-row
               label Expiration Date
               .form-row
-                input(type="text" placeholder="#{source.exp_month}" name="")
+                input(type="text" value="#{source.exp_month}" name="expMonth")
                 | /
-                input(type="text" placeholder="#{source.exp_year}" name="")
+                input(type="text" value="#{source.exp_year}" name="expYear")
             .form-row
               label Street Address 1
               .form-row
-                input(type="text" placeholder="#{source.address_line1}" name="address1")
+                input(type="text" value="#{source.address_line1}" name="address1")
               label Street Address 2
               .form-row
-                input(type="text" placeholder="#{source.address_line2}" name="address2")
+                input(type="text" value="#{source.address_line2}" name="address2")
             .form-row
               .form-row
                 label Zip Code
                   .form-row
-                    input(type="text" placeholder="#{source.address_zip}" name="zip")
+                    input(type="text" value="#{source.address_city}" name="city")
+            .form-row
+              .form-row
+                label Zip Code
+                  .form-row
+                    input(type="text" value="#{source.address_zip}" name="zip")
               .form-row
                 label State
                   .form-row
-                    input(type="text" placeholder="#{source.address_state}" name="state")
+                    input(type="text" value="#{source.address_state}" name="state")
               .form-row
                 label Country
                   .form-row
-                    input(type="text" placeholder="#{source.address_country}" name="country")
-      button(type="submit") Update Information
+                    input(type="text" value="#{source.address_country}" name="country")
+      button(type="submit") Update Customer Information
       
     .form-row
       span Account Balance

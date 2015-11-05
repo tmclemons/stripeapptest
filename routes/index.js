@@ -98,6 +98,7 @@ router.get('/profile/customer', function(req, res, next) {
         subResponse = subscriptions.data;
         // console.log(count)
         if(count == 2){
+          // console.log(cusResponse)
           // console.log(ccResponse)
           // console.log(subResponse)
           res.render('profile', {
@@ -115,7 +116,6 @@ router.post('/profile/update-subs', function(req, res, next){
   var customerObj = "cus_7HLWwJz9DIJrqF";
   var subscriptionID = req.body.subID;
   var quantity = req.body.subQuantity;
-  var count = 0;
 
   for (var i = 0; i < req.body.subTotal; i++) {
     updateSubs(subscriptionID[i], quantity[i]);
@@ -148,6 +148,72 @@ function updateSubs(subscriptionID, quantity) {
     function(err, subscriptions) {
 
     });
+}
+
+//update customer info
+router.post('/profile/cus-info', function(req, res, next){
+  stripe;
+  var customerObj = ["cus_7HLWwJz9DIJrqF"];
+  var cusCCId = req.body.ccID;
+  var ccQuantity = req.body.ccQuantity;
+  var resultsCC;
+  var cusCreditCard;
+
+  for (var i = 0; i < ccQuantity; i++) {
+    resultsCC = {
+      address_line1: req.body.address1[i],
+      address_line2: req.body.address2[i],
+      address_city: req.body.city[i],
+      address_country: req.body.country[i],
+      address_state: req.body.state[i],
+      address_zip: req.body.zip[i],
+      exp_month: req.body.expMonth[i],
+      exp_year: req.body.expYear[i],
+      name: req.body.cusName
+    };
+
+    // cusCCId[i];
+    updateCusInfo(req);
+    updateCCInfo(cusCCId[i], resultsCC, req);
+
+    // resultsCC;
+  }
+  // updateCusInfo(req);
+  // updateCCInfo(cusCCId[i], resultsCC, req);
+
+
+  res.redirect('/profile/customer');
+
+  // console.log(customerObj[i])
+  // console.log(cusCCId[i])
+});
+
+function updateCusInfo(req){
+
+  stripe.customers.update(
+    "cus_7HLWwJz9DIJrqF",
+    {
+    description: req.body.cusName,
+    email: req.body.cusEmail
+  }, function(err, customer) {
+    // asynchronously called
+    // console.log('Fail')
+
+  });
+}
+
+function updateCCInfo(cusCCId, resultsCC, req){
+  stripe.customers.updateCard(
+    "cus_7HLWwJz9DIJrqF",
+    cusCCId,
+    resultsCC,
+    function(err, customer) {
+    // asynchronously called
+    console.log(cusCCId)
+    console.log(resultsCC)
+
+    console.log('check')
+  });
 }
 
 
