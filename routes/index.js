@@ -74,11 +74,7 @@ router.get('/profile/customer', function(req, res, next) {
       if (err && err.type === 'StripeCardError') {
         // The card has been decline
       } else {
-        // console.log(result);
-        // console.log('hit')
         count++;
-        // console.log(count)
-        // return result
         cusResponse = result;
         ccResponse = result.sources.data;
       }
@@ -90,17 +86,9 @@ router.get('/profile/customer', function(req, res, next) {
       if (err && err.type === 'StripeCardError') {
         // The card has been decline
       } else {
-        // console.log(subscriptions);
-        // console.log(subscriptions.data);
-        // console.log('hit2')
         count++;
-        // console.log(count)
         subResponse = subscriptions.data;
-        // console.log(count)
         if(count == 2){
-          // console.log(cusResponse)
-          // console.log(ccResponse)
-          // console.log(subResponse)
           res.render('profile', {
             customer: cusResponse,
             sources: ccResponse,
@@ -171,21 +159,10 @@ router.post('/profile/cus-info', function(req, res, next){
       exp_year: req.body.expYear[i],
       name: req.body.cusName
     };
-
-    // cusCCId[i];
     updateCusInfo(req);
     updateCCInfo(cusCCId[i], resultsCC, req);
-
-    // resultsCC;
   }
-  // updateCusInfo(req);
-  // updateCCInfo(cusCCId[i], resultsCC, req);
-
-
   res.redirect('/profile/customer');
-
-  // console.log(customerObj[i])
-  // console.log(cusCCId[i])
 });
 
 function updateCusInfo(req){
@@ -215,6 +192,5 @@ function updateCCInfo(cusCCId, resultsCC, req){
     console.log('check')
   });
 }
-
 
 module.exports = router;
