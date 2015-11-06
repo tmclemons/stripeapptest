@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
+var cusObject = "cus_7HLWwJz9DIJrqF";
 
 /* GET home page. */
 router.get('/', function(req, res, next ) {
@@ -49,7 +50,7 @@ router.post('/plans', function(req, res, next) {
   var quantity = req.body.quantity;
 
   var subscription = stripe.customers.createSubscription(
-    "cus_7HLWwJz9DIJrqF", {
+    cusObject, {
     plan: "sift-introductory",
     quantity: quantity
     }, function(err, charge) {
@@ -69,7 +70,7 @@ router.get('/profile/customer', function(req, res, next) {
   var ccResponse;
 
   stripe.customers.retrieve(
-    "cus_7HLWwJz9DIJrqF",
+    cusObject,
     function(err, result) {
       if (err && err.type === 'StripeCardError') {
         // The card has been decline
@@ -81,7 +82,7 @@ router.get('/profile/customer', function(req, res, next) {
   });
 
   stripe.customers.listSubscriptions(
-    "cus_7HLWwJz9DIJrqF",
+    cusObject,
     function(err, subscriptions) {
       if (err && err.type === 'StripeCardError') {
         // The card has been decline
@@ -101,7 +102,7 @@ router.get('/profile/customer', function(req, res, next) {
 
 //update customer subscription
 router.post('/profile/update-subs', function(req, res, next){
-  var customerObj = "cus_7HLWwJz9DIJrqF";
+  var customerObj = cusObject;
   var subscriptionID = req.body.subID;
   var quantity = req.body.subQuantity;
 
@@ -141,7 +142,7 @@ function updateSubs(subscriptionID, quantity) {
 //update customer info
 router.post('/profile/cus-info', function(req, res, next){
   stripe;
-  var customerObj = ["cus_7HLWwJz9DIJrqF"];
+  var customerObj = [cusObject];
   var cusCCId = req.body.ccID;
   var ccQuantity = req.body.ccQuantity;
   var resultsCC;
@@ -168,7 +169,7 @@ router.post('/profile/cus-info', function(req, res, next){
 function updateCusInfo(req){
 
   stripe.customers.update(
-    "cus_7HLWwJz9DIJrqF",
+    cusObject,
     {
     description: req.body.cusName,
     email: req.body.cusEmail
@@ -181,7 +182,7 @@ function updateCusInfo(req){
 
 function updateCCInfo(cusCCId, resultsCC, req){
   stripe.customers.updateCard(
-    "cus_7HLWwJz9DIJrqF",
+    cusObject,
     cusCCId,
     resultsCC,
     function(err, customer) {
@@ -192,5 +193,47 @@ function updateCCInfo(cusCCId, resultsCC, req){
     console.log('check')
   });
 }
+
+router.get('/profile/invoices', function(req, res, next){
+  stripe;
+  var cusInvoice;
+  stripe.invoices.list(
+    { limit: 30,
+      customer: cusObject
+     },
+    function(err, invoices) {
+      // asynchronously called
+      if (err && err.type === 'StripeCardError') {
+        // The card has been decline
+      } else {
+        cusInvoice = invoices.data;
+        console.log(cusInvoice)
+        // console.log(cusInvoice)
+        res.render('invoice', {
+          invoices: cusInvoice
+        });
+      }
+    });
+});
+
+router.get('/profile/invoice/invoice-item', function(req, res, next){
+  stripe;
+  // var invoiceID = req.body.invoiceID;
+  // console.log(req.body.invoiceID)
+  stripe.invoices.retrieveLines(
+    invoiceID,
+    { limit: 30
+     },
+    function(err, lines) {
+      // asynchronously called
+      console.log(lines.total_count )
+      if (err && err.type === 'StripeCardError') {
+        // The card has been decline
+      } else {
+        // console.log(lines)
+        // res.json('invoice-item', lines)
+      }
+    });
+});
 
 module.exports = router;

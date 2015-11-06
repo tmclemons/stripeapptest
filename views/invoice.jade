@@ -1,3 +1,19 @@
 extends layout
 
 block content
+  span #{invoices.total_count}
+  for invoice in invoices
+    form(action="/profile/invoice/invoice-item" method="GET")
+      .form-row
+        span #{invoice.object}: #{invoice.id}
+        input(type="hidden" value="#{invoice.id}" name="invoiceID")
+      .form-row
+        span Amount Due: #{invoice.amount_due}
+        button(src="submit") submit
+
+      
+  //- for line in lines
+  //-   .form-row
+  //-     span #{line.id}
+  //-     span #{line.amount}
+      
