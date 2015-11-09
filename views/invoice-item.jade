@@ -1,3 +1,67 @@
 extends layout
 
 block content
+  a(href="/profile/invoices")
+    button Back
+  input(type="text" value="#{invoicelink}" name="invoiceURL")
+  button(type="submit" onclick="consoletest();") Preview
+  .form-row
+    span Invoice ID: 
+    span #{data.id}  
+  .form-row
+    span Customer ID: 
+    span #{data.customer}
+  .form-row
+    span Invoice Date: 
+    span #{new Date(data.date*1000)}
+  .form-row
+    span Invoice Status: 
+    span #{status}
+    
+  for item in items
+    .form-row
+      span Plan Description:
+        .form-row
+          span #{item.plan.statement_descriptor}
+        .form-row
+          span #{item.description}
+    .form-row
+      span Plan Details:
+        .form-row
+          span #{item.quantity} 
+          span #{item.plan.interval}s
+        .form-row
+          span Interval:
+            .form-row
+              span #{new Date((item.period.start)*1000)} to 
+              span #{new Date((item.period.end)*1000)}
+          .form-row
+            span Price Per Plan: 
+              span #{item.amount/100} 
+              span #{item.currency}
+          .form-row
+            span Trial Period
+              span #{item.plan.trial_period_days}
+
+  .form-row
+    span Reciept Number: 
+    span #{data.receipt_number}  
+  .form-row
+    span Starting Balanace: 
+    span #{data.starting_balance} 
+  .form-row
+    span Subtotal: 
+    span #{data.subtotal/100}
+  .form-row
+    span Tax Percentage: 
+    span #{data.tax_percent*100} %
+  .form-row
+    span Total Taxes: 
+    span #{data.tax/100}
+  .form-row
+    span Total Amount: 
+    span #{data.total/100} 
+  .form-row
+    span #{new Date((data.webhooks_delivered_at)*1000)} 
+
+    

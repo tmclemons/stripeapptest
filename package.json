@@ -12,6 +12,9 @@
     "express": "~4.13.1",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
+    "node-phantom": "^0.2.5",
+    "phantom": "^0.8.3",
+    "phantomjs": "^1.9.18",
     "serve-favicon": "~2.3.0"
   }
 }

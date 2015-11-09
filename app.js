@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var phantomjs = require('phantomjs')
+var phantom = require('node-phantom');
 
 var routes = require('./routes/index');
 

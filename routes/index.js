@@ -3,6 +3,11 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var stripe = require("stripe")("sk_test_r18fvc3LgDlo6uKRCxnsi5Oj");
 var cusObject = "cus_7HLWwJz9DIJrqF";
+// var webPage = require('webpage');
+// var page = webPage.create();
+
+// console.log(webPage)
+
 
 /* GET home page. */
 router.get('/', function(req, res, next ) {
@@ -193,7 +198,7 @@ function updateCCInfo(cusCCId, resultsCC, req){
     console.log('check')
   });
 }
-
+//get invoices
 router.get('/profile/invoices', function(req, res, next){
   stripe;
   var cusInvoice;
@@ -207,7 +212,7 @@ router.get('/profile/invoices', function(req, res, next){
         // The card has been decline
       } else {
         cusInvoice = invoices.data;
-        console.log(cusInvoice)
+        // console.log(cusInvoice)
         // console.log(cusInvoice)
         res.render('invoice', {
           invoices: cusInvoice
@@ -216,22 +221,55 @@ router.get('/profile/invoices', function(req, res, next){
     });
 });
 
+//get invoice item
 router.get('/profile/invoice/invoice-item', function(req, res, next){
   stripe;
-  // var invoiceID = req.body.invoiceID;
-  // console.log(req.body.invoiceID)
-  stripe.invoices.retrieveLines(
+  var invoiceID = req.query.ID;
+  var count = 0;
+  var invData;
+  var invItems;
+  var invStatus;
+  var invURL;
+
+  stripe.invoices.retrieve(
     invoiceID,
-    { limit: 30
-     },
-    function(err, lines) {
-      // asynchronously called
-      console.log(lines.total_count )
+    function(err, invoice) {
       if (err && err.type === 'StripeCardError') {
         // The card has been decline
       } else {
-        // console.log(lines)
-        // res.json('invoice-item', lines)
+          invData = invoice;
+          if(invData.paid == true){
+            invStatus = "Paid";
+          } else {invStatus = "Unpaid";}
+          count++;
+          // console.log(invData)
+          console.log(count)
+
+      }
+  });
+
+  stripe.invoices.retrieveLines(
+    invoiceID,
+    { limit: 1
+     },
+    function(err, lines) {
+      if (err && err.type === 'StripeCardError') {
+        // The card has been decline
+      } else {
+        invItems = lines.data;
+        count++;
+        console.log(count)
+        if(count==2){
+          console.log(invData)
+          invURL = req.protocol + '://' + req.get('host') + req.originalUrl;
+          console.log(req.protocol + '://' + req.get('host') + req.originalUrl)
+          res.render('invoice-item', {
+            data: invData,
+            items: invItems,
+            status: invStatus,
+            invoicelink: invURL
+          });
+        }
       }
     });
 });

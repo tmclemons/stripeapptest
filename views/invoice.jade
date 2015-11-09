@@ -6,10 +6,10 @@ block content
     form(action="/profile/invoice/invoice-item" method="GET")
       .form-row
         span #{invoice.object}: #{invoice.id}
-        input(type="hidden" value="#{invoice.id}" name="invoiceID")
+      input(type="hidden" value="#{invoice.id}" name="ID")
       .form-row
         span Amount Due: #{invoice.amount_due}
-        button(src="submit") submit
+      button(type="submit") submit
 
       
   //- for line in lines
